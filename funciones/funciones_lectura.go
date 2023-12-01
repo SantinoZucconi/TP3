@@ -9,8 +9,8 @@ import (
 	TDAGrafo "tdas/grafo"
 )
 
-func LeerGrafotxt(archivo string) TDAGrafo.Grafo[string] {
-	g := TDAGrafo.CrearGrafo[string](true)
+func LeerGrafotxt(archivo string) TDAGrafo.GrafoNoPesado[string] {
+	g := TDAGrafo.CrearGrafoNoPesado[string](true)
 	dicc := TDADicc.CrearHash[string, TDACola.Cola[string]]()
 	datos, err := os.Open(archivo)
 	if err != nil {
@@ -29,7 +29,7 @@ func LeerGrafotxt(archivo string) TDAGrafo.Grafo[string] {
 	}
 	dicc.Iterar(func(v string, adyacentes TDACola.Cola[string]) bool {
 		for !adyacentes.EstaVacia() {
-			g.AgregarArista(v, adyacentes.Desencolar(), 1)
+			g.AgregarAristaNP(v, adyacentes.Desencolar())
 		}
 		return true
 	})
