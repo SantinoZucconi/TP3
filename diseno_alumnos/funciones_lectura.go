@@ -1,4 +1,4 @@
-package funciones
+package internet
 
 import (
 	"bufio"
@@ -9,31 +9,36 @@ import (
 	TDAGrafo "tdas/grafo"
 )
 
-func LeerGrafotxt(archivo string) TDAGrafo.Grafo[string] {
-	g := TDAGrafo.CrearGrafo[string](true)
+func LeerGrafotxt(archivo string) (TDAGrafo.GrafoNoPesado[string], TDADicc.Diccionario[string, string]) {
+	g := TDAGrafo.CrearGrafoNoPesado[string](true)
 	dicc := TDADicc.CrearHash[string, TDACola.Cola[string]]()
+	primerosLinks := TDADicc.CrearHash[string, string]()
 	datos, err := os.Open(archivo)
 	if err != nil {
 		panic("No se pudo abrir el archivo")
 	}
+
 	defer datos.Close()
 	scaner := bufio.NewScanner(datos)
 	for scaner.Scan() {
 		texto := scaner.Text()
 		vertices := strings.Split(texto, "\t")
 		g.AgregarVertice(vertices[0])
+		primerosLinks.Guardar(vertices[0], vertices[1])
 		dicc.Guardar(vertices[0], TDACola.CrearColaEnlazada[string]())
 		for i := 1; i < len(vertices); i++ {
 			dicc.Obtener(vertices[0]).Encolar(vertices[i])
 		}
 	}
+
 	dicc.Iterar(func(v string, adyacentes TDACola.Cola[string]) bool {
 		for !adyacentes.EstaVacia() {
-			g.AgregarArista(v, adyacentes.Desencolar(), 1)
+			g.AgregarAristaNP(v, adyacentes.Desencolar())
 		}
 		return true
 	})
-	return g
+
+	return g, primerosLinks
 }
 
 func LeerChile() TDADicc.Diccionario[string, bool] {

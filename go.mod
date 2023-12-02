@@ -1,3 +1,3 @@
-module netstats
+module tp3
 
 go 1.20
