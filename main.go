@@ -61,7 +61,7 @@ func main() {
 			case PAGERANK:
 				lista, err = FUNCIONES.PaginasMasImportantes(internet, entrada)
 			case CONECTADOS:
-				//
+				lista, err = FUNCIONES.ListaConectados(internet, entrada)
 			case CICLO_N:
 				//
 			case LECTURA:

@@ -65,11 +65,12 @@ func CalcularClustering(internet INTERNET.Internet, entrada []string) (float64, 
 	return internet.ClusteringRed(), nil
 }
 
-/*
-
-func --- (internet INTERNET.Internet, entrada []string) ([]string, error) {
-
+func ListaConectados(internet INTERNET.Internet, entrada []string) ([]string, error) {
+	pagina := strings.Join(entrada[1:], " ")
+	return internet.Conectividad(pagina), nil
 }
+
+/*
 
 func --- (internet INTERNET.Internet, entrada []string) ([]string, error) {
 
