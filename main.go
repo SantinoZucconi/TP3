@@ -4,13 +4,15 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
+	INTERNET "tp3/diseno_alumnos"
 	ERROR "tp3/errores"
 	FUNCIONES "tp3/funciones"
 )
 
 const VACIO int = 0
+
+// DUDA: QUE HACER SI LA PAGINA NO EXISTE?
 
 const (
 	LISTAR       string = "listar_operaciones"
@@ -31,18 +33,10 @@ func main() {
 	argumentos := os.Args
 	links := argumentos[1:]
 	var (
-		err                    error
-		lista                  []string
-		valor                  float64
-		pageRanks              []string
-		pRcalculado            bool
-		diametro               []string
-		diametroCalculado      bool
-		clusteringRed          float64
-		clusteringRedCalculado bool
+		err   error
+		lista []string
+		valor float64
 	)
-
-	operaciones := []string{"camino", "mas_importantes", "conectados", "ciclo", "lectura", "diametro", "rango", "comunidad", "navegacion", "clustering"}
 
 	if len(links) > 1 {
 		err = &ERROR.ErrorParametros{}
@@ -50,7 +44,7 @@ func main() {
 		return
 	}
 
-	internet := FUNCIONES.LeerGrafotxt(links[0])
+	internet := INTERNET.GenerarInternet(links[0])
 
 	s := bufio.NewScanner(os.Stdin)
 	for s.Scan() {
@@ -61,33 +55,11 @@ func main() {
 			comando := entrada[0]
 			switch comando {
 			case LISTAR:
-				if len(entrada) != 1 {
-					err = &ERROR.ErrorComandoInvalido{}
-				}
-				lista = operaciones
+				lista, err = FUNCIONES.ListarOperaciones(internet, entrada)
 			case CAMINO:
-				if len(entrada) != 2 {
-					err = &ERROR.ErrorComandoInvalido{}
-				} else {
-					extremos := strings.Split(entrada[1], ",")
-					origen := extremos[0]
-					destino := extremos[1]
-					lista, err = FUNCIONES.CaminoMinimo(internet, origen, destino)
-				}
+				lista, err = FUNCIONES.EncontrarCaminoMinimo(internet, entrada)
 			case PAGERANK:
-				if len(entrada) != 2 {
-					err = &ERROR.ErrorComandoInvalido{}
-				}
-				if !pRcalculado {
-					pageRanks = FUNCIONES.PageRank(internet)
-					pRcalculado = true
-				}
-				lista = pageRanks
-				pr, err := strconv.Atoi(entrada[1])
-				valor = float64(pr)
-				if err != nil {
-					err = &ERROR.ErrorComandoInvalido{}
-				}
+				lista, err = FUNCIONES.PaginasMasImportantes(internet, entrada)
 			case CONECTADOS:
 				//
 			case CICLO_N:
@@ -95,40 +67,15 @@ func main() {
 			case LECTURA:
 				//
 			case DIAMETRO:
-				if len(entrada) != 1 {
-					err = &ERROR.ErrorComandoInvalido{}
-				} else if !diametroCalculado {
-					diametro = FUNCIONES.Diametro(internet)
-				}
-				lista = diametro
-
+				lista, err = FUNCIONES.CalcularDiametro(internet, entrada)
 			case RANGO:
-				if len(entrada) != 2 {
-					err = &ERROR.ErrorComandoInvalido{}
-				}
-				calculo := strings.Split(entrada[1], ",")
-				origen := calculo[0]
-				rango, err := strconv.Atoi(calculo[1])
-				if err != nil {
-					err = &ERROR.ErrorComandoInvalido{}
-				} else {
-					valor = float64(FUNCIONES.TodosEnRango(internet, origen, rango))
-				}
-
+				valor, err = FUNCIONES.PaginasEnRango(internet, entrada)
 			case COMUNIDADES:
 				//
 			case NAVEGACION_1:
-				//
+				lista, err = FUNCIONES.NavegarPrimerLink(internet, entrada)
 			case CLUSTERING:
-				if len(entrada) > 1 {
-					pagina := strings.Join(entrada[1:], " ")
-					valor = FUNCIONES.CLUSTERING_INDIVIDUAL(internet, pagina)
-				} else if !clusteringRedCalculado {
-					clusteringRed = FUNCIONES.CLUSTERING_RED(internet)
-				} else {
-					valor = clusteringRed
-				}
-
+				valor, err = FUNCIONES.CalcularClustering(internet, entrada)
 			default:
 				err = &ERROR.ErrorComandoInvalido{}
 			}
@@ -146,13 +93,13 @@ func main() {
 func imprimir_resultado(comando string, lista []string, valor float64) {
 	switch comando {
 	case LISTAR:
-		FUNCIONES.ImprimirOperaciones(lista)
+		FUNCIONES.ImprimirLista(lista)
 	case CAMINO:
 		FUNCIONES.ImprimirCamino(lista, true)
 	case PAGERANK:
 		FUNCIONES.ImprimirMasImportantes(lista, int(valor))
 	case CONECTADOS:
-		//
+		FUNCIONES.ImprimirLista(lista)
 	case CICLO_N:
 		//
 	case LECTURA:
@@ -164,7 +111,7 @@ func imprimir_resultado(comando string, lista []string, valor float64) {
 	case COMUNIDADES:
 		//
 	case NAVEGACION_1:
-		//
+		FUNCIONES.ImprimirCamino(lista, false)
 	case CLUSTERING:
 		FUNCIONES.ImprimirValor(valor)
 	}

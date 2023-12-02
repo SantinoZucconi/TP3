@@ -2,9 +2,9 @@ package funciones
 
 import "fmt"
 
-func ImprimirOperaciones(operaciones []string) {
-	for i := 0; i < len(operaciones); i++ {
-		fmt.Printf("\n%s", operaciones[i])
+func ImprimirLista(lista []string) {
+	for i := 0; i < len(lista); i++ {
+		fmt.Printf("\n%s", lista[i])
 	}
 }
 
