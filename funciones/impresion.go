@@ -1,6 +1,8 @@
 package funciones
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func ImprimirLista(lista []string) {
 	for i := 0; i < len(lista); i++ {
@@ -30,4 +32,27 @@ func ImprimirMasImportantes(paginas []string, top int) {
 
 func ImprimirValor(cant float64) {
 	fmt.Printf("\n%f", cant)
+}
+
+func ImprimirLectura2am(paginas []string) {
+	fmt.Println("Orden:")
+	for indice, pagina := range paginas {
+		fmt.Println(indice+1, "-", pagina)
+	}
+}
+
+func ImprimirComunidades(comunidades []string) {
+	for _, pagina := range comunidades {
+		fmt.Printf("%s, ", pagina)
+	}
+}
+
+func ImprimirCicloN(ciclo []string) {
+	for indice, pagina := range ciclo {
+		if indice != len(ciclo)-1 {
+			fmt.Printf("%s -> ", pagina)
+		} else {
+			fmt.Println(pagina)
+		}
+	}
 }

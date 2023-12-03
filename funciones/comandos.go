@@ -93,3 +93,22 @@ func PaginasMasImportantes(internet INTERNET.Internet, entrada []string) ([]stri
 	return internet.MasImportantes(top), nil
 
 }
+
+func Lectura2am(internet INTERNET.Internet, entrada []string) ([]string, error) {
+	return internet.Lectura2am(entrada)
+}
+
+func Comunidades(internet INTERNET.Internet, pagina []string) ([]string, error) {
+	if len(pagina) != 1 {
+		return []string{}, ERROR.ErrorComandoInvalido{}
+	}
+	return internet.Comunidades(pagina[0]), nil
+}
+
+func CicloNesimo(internet INTERNET.Internet, entrada []string) ([]string, error) {
+	if len(entrada) != 2 {
+		return []string{}, ERROR.ErrorComandoInvalido{}
+	}
+	cantidad, err := strconv.Atoi(entrada[1])
+	return internet.CicloN(entrada[0], cantidad), err
+}

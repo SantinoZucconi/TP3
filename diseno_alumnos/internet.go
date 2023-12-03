@@ -9,13 +9,14 @@ type Internet interface {
 	NavPrimerLink(string) []string
 
 	Conectividad(string) []string
-	Comunidades()
-	OrdenPaginas() []string
+	Comunidades(string) []string
+	//OrdenPaginas() []string
+	Lectura2am([]string) ([]string, error)
 	ClusteringRed() float64
 	ClusteringIndividual(string) float64
 
 	MasImportantes(int) []string
-	CicloArticulos() []string
+	CicloN(string, int) []string
 }
 
 /*

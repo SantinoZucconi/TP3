@@ -24,7 +24,9 @@ func LeerGrafotxt(archivo string) (TDAGrafo.GrafoNoPesado[string], TDADicc.Dicci
 		texto := scaner.Text()
 		vertices := strings.Split(texto, "\t")
 		g.AgregarVertice(vertices[0])
-		primerosLinks.Guardar(vertices[0], vertices[1])
+		if len(vertices) > 1 {
+			primerosLinks.Guardar(vertices[0], vertices[1])
+		}
 		dicc.Guardar(vertices[0], TDACola.CrearColaEnlazada[string]())
 		for i := 1; i < len(vertices); i++ {
 			dicc.Obtener(vertices[0]).Encolar(vertices[i])

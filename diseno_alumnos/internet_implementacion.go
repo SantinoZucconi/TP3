@@ -10,6 +10,11 @@ type paginaPR struct {
 	pageRank float64
 }
 
+type comunidades[K comparable] struct {
+	label     TDADicc.Diccionario[K, int]
+	comunidad TDADicc.Diccionario[int, []K]
+}
+
 type internet struct {
 	grafo                  TDAGrafo.GrafoNoPesado[string]
 	operaciones            []string
@@ -23,6 +28,8 @@ type internet struct {
 	clusteringRedCalculado bool
 	diametro               []string
 	diametroCalculado      bool
+	comunidades            comunidades[string]
+	comunidadesCalculado   bool
 }
 
 func GenerarInternet(archivo string) Internet {
@@ -81,4 +88,25 @@ func (i *internet) ClusteringIndividual(pagina string) float64 {
 
 func (i *internet) MasImportantes(top int) []string {
 	// definir que hacer (ordenar o top K a partir de diccionario?)
+	return []string{}
+}
+
+func (i *internet) Lectura2am(paginas []string) ([]string, error) {
+	return _Lectura2am(i.grafo, paginas)
+}
+
+func (i *internet) Comunidades(s string) []string {
+	if i.comunidadesCalculado {
+		if !i.comunidades.label.Pertenece(s) {
+			return []string{}
+		}
+		return i.comunidades.comunidad.Obtener(i.comunidades.label.Obtener(s))
+	}
+	i.comunidadesCalculado = true
+	i.comunidades = _Comunidades[string](i.grafo)
+	return i.comunidades.comunidad.Obtener(i.comunidades.label.Obtener(s))
+}
+
+func (i *internet) CicloN(p string, n int) []string {
+	return _CicloN[string](i.grafo, p, n)
 }
