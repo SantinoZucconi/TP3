@@ -20,9 +20,8 @@ func EncontrarCaminoMinimo(internet INTERNET.Internet, entrada []string) ([]stri
 	if len(entrada) != 2 {
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
-	extremos := strings.Split(entrada[1], ",")
-	origen := extremos[0]
-	destino := extremos[1]
+	origen := entrada[0]
+	destino := entrada[1]
 	camino, err := internet.CaminoMasCorto(origen, destino)
 	return camino, err
 }

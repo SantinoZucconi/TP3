@@ -12,13 +12,12 @@ func ImprimirLista(lista []string) {
 
 func ImprimirCamino(camino []string, imprimirCosto bool) {
 	largo := len(camino)
-	fmt.Printf("\n%s", camino[0])
-	for i := 1; i < largo; i++ {
-		fmt.Printf(" -> %s", camino[i])
+	for i := 0; i < largo-1; i++ {
+		fmt.Printf("%s -> ", camino[i])
 	}
-
+	fmt.Println(camino[largo-1])
 	if imprimirCosto {
-		fmt.Printf("\nCosto: %d", largo)
+		fmt.Println("Costo:", largo)
 	}
 
 }

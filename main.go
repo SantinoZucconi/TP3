@@ -58,6 +58,7 @@ func main() {
 			case LISTAR:
 				lista, err = FUNCIONES.ListarOperaciones(internet, entrada)
 			case CAMINO:
+				entrada = strings.Split(strings.Join(entrada, " "), ",")
 				lista, err = FUNCIONES.EncontrarCaminoMinimo(internet, entrada)
 			case PAGERANK:
 				lista, err = FUNCIONES.PaginasMasImportantes(internet, entrada)
