@@ -19,14 +19,6 @@ func min(x, y int) int {
 	return y
 }
 
-func max(x, y int) int {
-	if x > y {
-		return x
-	}
-
-	return y
-}
-
 func difAbs(x, y float64) float64 {
 	if x > y {
 		return x - y
@@ -35,8 +27,11 @@ func difAbs(x, y float64) float64 {
 	return y - x
 }
 
+// original ->> 100%
+// diferencia ->> x
+
 func difPorcentual(original, nuevo float64) float64 {
-	return difAbs(original, nuevo) / original * 100
+	return (difAbs(original, nuevo) / original) * 100
 }
 
 type verticePR[K comparable] struct {
@@ -162,7 +157,7 @@ func CaminoMinimo[K comparable](g TDAGrafo.GrafoNoPesado[K], origen, destino K) 
 
 func TodosEnRango[K comparable](g TDAGrafo.GrafoNoPesado[K], origen K, rango int) int {
 	_, orden := BFS(g, origen, func(vertice K, orden TDADicc.Diccionario[K, int]) bool {
-		return orden.Obtener(vertice) <= rango
+		return orden.Obtener(vertice) > rango
 	})
 
 	contador := 0
@@ -591,6 +586,7 @@ func _CicloN[K comparable](g TDAGrafo.Grafo[K], p K, n int) []K {
 			}
 		}
 	}
+
 	return dfs_cicloN[K](subgrafo, p, p, n)
 }
 

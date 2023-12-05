@@ -10,13 +10,12 @@ type Internet interface {
 
 	Conectividad(string) []string
 	Comunidades(string) []string
-	//OrdenPaginas() []string
 	Lectura2am([]string) ([]string, error)
 	ClusteringRed() float64
 	ClusteringIndividual(string) float64
 
 	MasImportantes(int) []string
-	CicloN(string, int) []string
+	CicloN(string, int) ([]string, error)
 }
 
 /*

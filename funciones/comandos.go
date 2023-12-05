@@ -7,7 +7,31 @@ import (
 	ERROR "tp3/errores"
 )
 
+const VACIO int = 0
+
+const (
+	LISTAR       string = "listar_operaciones"
+	CAMINO       string = "camino"
+	PAGERANK     string = "mas_importantes"
+	CONECTADOS   string = "conectados"
+	CICLO_N      string = "ciclo"
+	LECTURA      string = "lectura"
+	DIAMETRO     string = "diametro"
+	RANGO        string = "rango"
+	COMUNIDADES  string = "comunidad"
+	NAVEGACION_1 string = "navegacion"
+	CLUSTERING   string = "clustering"
+)
+
 const NULO float64 = -1
+
+func recuperarPagina(pagina []string) string {
+	return strings.Join(pagina, " ")
+}
+
+func separarPaginas(paginas []string) []string {
+	return strings.Split(strings.Join(paginas, " "), ",")
+}
 
 func ListarOperaciones(internet INTERNET.Internet, entrada []string) ([]string, error) {
 	if len(entrada) != 1 {
@@ -17,10 +41,13 @@ func ListarOperaciones(internet INTERNET.Internet, entrada []string) ([]string, 
 }
 
 func EncontrarCaminoMinimo(internet INTERNET.Internet, entrada []string) ([]string, error) {
-	if len(entrada) != 2 {
+	if len(entrada) < 2 {
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
-	extremos := strings.Split(entrada[1], ",")
+	extremos := separarPaginas(entrada[1:])
+	if len(extremos) != 2 {
+		return []string{}, &ERROR.ErrorComandoInvalido{}
+	}
 	origen := extremos[0]
 	destino := extremos[1]
 	camino, err := internet.CaminoMasCorto(origen, destino)
@@ -35,17 +62,16 @@ func CalcularDiametro(internet INTERNET.Internet, entrada []string) ([]string, e
 }
 
 func PaginasEnRango(internet INTERNET.Internet, entrada []string) (float64, error) {
-	if len(entrada) != 2 {
+	if len(entrada) < 2 {
 		return NULO, &ERROR.ErrorComandoInvalido{}
 	}
-	calculo := strings.Split(entrada[1], ",")
+	calculo := separarPaginas(entrada[1:])
 	origen := calculo[0]
 	rango, err := strconv.Atoi(calculo[1])
-	if err != nil {
+	if err != nil || rango < 0 {
 		return NULO, &ERROR.ErrorComandoInvalido{}
 	}
 	return float64(internet.EnRango(origen, rango)), nil
-
 }
 
 func NavegarPrimerLink(internet INTERNET.Internet, entrada []string) ([]string, error) {
@@ -59,34 +85,23 @@ func NavegarPrimerLink(internet INTERNET.Internet, entrada []string) ([]string, 
 
 func CalcularClustering(internet INTERNET.Internet, entrada []string) (float64, error) {
 	if len(entrada) > 1 {
-		pagina := strings.Join(entrada[1:], " ")
+		pagina := recuperarPagina(entrada[1:])
 		return internet.ClusteringIndividual(pagina), nil
 	}
 	return internet.ClusteringRed(), nil
 }
 
 func ListaConectados(internet INTERNET.Internet, entrada []string) ([]string, error) {
-	pagina := strings.Join(entrada[1:], " ")
+	pagina := recuperarPagina(entrada[1:])
 	return internet.Conectividad(pagina), nil
 }
-
-/*
-
-func --- (internet INTERNET.Internet, entrada []string) ([]string, error) {
-
-}
-
-func --- (internet INTERNET.Internet, entrada []string) ([]string, error) {
-
-}
-*/
 
 func PaginasMasImportantes(internet INTERNET.Internet, entrada []string) ([]string, error) {
 	if len(entrada) != 2 {
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
 	top, err := strconv.Atoi(entrada[1])
-	if err != nil {
+	if err != nil || top < 1 {
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
 
@@ -95,14 +110,17 @@ func PaginasMasImportantes(internet INTERNET.Internet, entrada []string) ([]stri
 }
 
 func Lectura2am(internet INTERNET.Internet, entrada []string) ([]string, error) {
-	return internet.Lectura2am(entrada)
+	paginas := separarPaginas(entrada[1:])
+	return internet.Lectura2am(paginas)
 }
 
-func Comunidades(internet INTERNET.Internet, pagina []string) ([]string, error) {
-	if len(pagina) != 1 {
+func Comunidades(internet INTERNET.Internet, entrada []string) ([]string, error) {
+	if len(entrada) != 1 {
 		return []string{}, ERROR.ErrorComandoInvalido{}
 	}
-	return internet.Comunidades(pagina[0]), nil
+
+	pagina := recuperarPagina(entrada[1:])
+	return internet.Comunidades(pagina), nil
 }
 
 func CicloNesimo(internet INTERNET.Internet, entrada []string) ([]string, error) {
@@ -110,5 +128,48 @@ func CicloNesimo(internet INTERNET.Internet, entrada []string) ([]string, error)
 		return []string{}, ERROR.ErrorComandoInvalido{}
 	}
 	cantidad, err := strconv.Atoi(entrada[1])
-	return internet.CicloN(entrada[0], cantidad), err
+	if err != nil || cantidad < 1 {
+		return []string{}, &ERROR.ErrorComandoInvalido{}
+	}
+
+	return internet.CicloN(entrada[0], cantidad)
+}
+
+func ProcesarComando(internet INTERNET.Internet, entrada []string) ([]string, float64, error) {
+	var err error
+	var valor float64
+	var lista []string
+
+	if len(entrada) == VACIO {
+		err = &ERROR.ErrorNoHayEntrada{}
+		return lista, valor, err
+	}
+	comando := entrada[0]
+	switch comando {
+	case LISTAR:
+		lista, err = ListarOperaciones(internet, entrada)
+	case CAMINO:
+		lista, err = EncontrarCaminoMinimo(internet, entrada)
+	case PAGERANK:
+		lista, err = PaginasMasImportantes(internet, entrada)
+	case CONECTADOS:
+		lista, err = ListaConectados(internet, entrada)
+	case CICLO_N:
+		lista, err = CicloNesimo(internet, entrada)
+	case LECTURA:
+		lista, err = Lectura2am(internet, entrada)
+	case DIAMETRO:
+		lista, err = CalcularDiametro(internet, entrada)
+	case RANGO:
+		valor, err = PaginasEnRango(internet, entrada)
+	case COMUNIDADES:
+		lista, err = Comunidades(internet, entrada)
+	case NAVEGACION_1:
+		lista, err = NavegarPrimerLink(internet, entrada)
+	case CLUSTERING:
+		valor, err = CalcularClustering(internet, entrada)
+	default:
+		err = &ERROR.ErrorComandoInvalido{}
+	}
+	return lista, valor, err
 }

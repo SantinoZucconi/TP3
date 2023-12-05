@@ -10,49 +10,46 @@ func ImprimirLista(lista []string) {
 	}
 }
 
-func ImprimirCamino(camino []string, imprimirCosto bool) {
+func ImprimirPaginas(camino []string, separador string, imprimirCosto bool) {
 	largo := len(camino)
 	fmt.Printf("\n%s", camino[0])
 	for i := 1; i < largo; i++ {
-		fmt.Printf(" -> %s", camino[i])
+		fmt.Printf(separador+" %s", camino[i])
 	}
 
 	if imprimirCosto {
-		fmt.Printf("\nCosto: %d", largo)
+		fmt.Printf("\nCosto: %d", largo-1)
 	}
 
-}
-
-func ImprimirMasImportantes(paginas []string, top int) {
-	fmt.Printf("\n%s", paginas[0])
-	for i := 1; i < top; i++ {
-		fmt.Printf(", %s", paginas[i])
-	}
 }
 
 func ImprimirValor(cant float64) {
 	fmt.Printf("\n%f", cant)
 }
 
-func ImprimirLectura2am(paginas []string) {
-	fmt.Println("Orden:")
-	for indice, pagina := range paginas {
-		fmt.Println(indice+1, "-", pagina)
-	}
-}
-
-func ImprimirComunidades(comunidades []string) {
-	for _, pagina := range comunidades {
-		fmt.Printf("%s, ", pagina)
-	}
-}
-
-func ImprimirCicloN(ciclo []string) {
-	for indice, pagina := range ciclo {
-		if indice != len(ciclo)-1 {
-			fmt.Printf("%s -> ", pagina)
-		} else {
-			fmt.Println(pagina)
-		}
+func ImprimirResultado(comando string, lista []string, valor float64) {
+	switch comando {
+	case LISTAR:
+		ImprimirLista(lista)
+	case CAMINO:
+		ImprimirPaginas(lista, " ->", true)
+	case PAGERANK:
+		ImprimirPaginas(lista, ",", false)
+	case CONECTADOS:
+		ImprimirLista(lista)
+	case CICLO_N:
+		ImprimirPaginas(lista, " ->", false)
+	case LECTURA:
+		ImprimirPaginas(lista, ",", false)
+	case DIAMETRO:
+		ImprimirPaginas(lista, " ->", true)
+	case RANGO:
+		ImprimirValor(valor)
+	case COMUNIDADES:
+		ImprimirPaginas(lista, ",", false)
+	case NAVEGACION_1:
+		ImprimirPaginas(lista, " ->", false)
+	case CLUSTERING:
+		ImprimirValor(valor)
 	}
 }

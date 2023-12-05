@@ -29,5 +29,3 @@ type ErrorNoExisteOrden struct{}
 func (e ErrorNoExisteOrden) Error() string {
 	return "No existe forma de leer las paginas en orden"
 }
-
-// faltaria error de no existe pagina?
