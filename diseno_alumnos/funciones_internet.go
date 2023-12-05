@@ -488,12 +488,11 @@ func _Lectura2am(grafo TDAGrafo.GrafoNoPesado[string], paginas []string) ([]stri
 		lista := grafo.Adyacente(pagina)
 		for _, link := range lista {
 			if dicc.Pertenece(link) {
-				subgrafo.AgregarAristaNP(pagina, link)
+				subgrafo.AgregarAristaNP(link, pagina)
 			}
 		}
 	}
-	recorrido, err := OrdenTopologico[string](subgrafo)
-	return invertir[string](recorrido), err
+	return OrdenTopologico[string](subgrafo)
 }
 
 func OrdenTopologico[K comparable](g TDAGrafo.GrafoNoPesado[K]) ([]K, error) {
@@ -503,8 +502,8 @@ func OrdenTopologico[K comparable](g TDAGrafo.GrafoNoPesado[K]) ([]K, error) {
 	res := []K{}
 	grados := GradoDeEntrada[K](g)
 	q := TDACola.CrearColaEnlazada[K]()
-	for i := grados.Iterador(); i.HaySiguiente(); i.Siguiente() {
-		vertice, grado := i.VerActual()
+	for iter := grados.Iterador(); iter.HaySiguiente(); iter.Siguiente() {
+		vertice, grado := iter.VerActual()
 		if grado == 0 {
 			q.Encolar(vertice)
 			res = append(res, vertice)
@@ -544,18 +543,6 @@ func existeCiclo[K comparable](g TDAGrafo.Grafo[K]) bool {
 		}
 	}
 	return false
-}
-
-func invertir[K comparable](arr []K) []K {
-	res := []K{}
-	p := TDAPila.CrearPilaDinamica[K]()
-	for _, elemento := range arr {
-		p.Apilar(elemento)
-	}
-	for !p.EstaVacia() {
-		res = append(res, p.Desapilar())
-	}
-	return res
 }
 
 func _CicloN[K comparable](g TDAGrafo.Grafo[K], p K, n int) []K {
