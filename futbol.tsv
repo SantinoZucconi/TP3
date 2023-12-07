@@ -1,0 +1,35 @@
+Mundial
+FIFA	CONMEBOL	UEFA
+CONMEBOL	Argentina	FIFA	Brasil
+UEFA	Inglaterra	FIFA	España	Italia
+Argentina	Boca Juniors	River Plate
+Boca Juniors	Racing	River Plate	Argentina
+River Plate	San Lorenzo	Independiente
+San Lorenzo	Boca Juniors
+Racing	Independiente	San Lorenzo
+Independiente	Racing
+Brasil	Fluminense	Palmeiras
+Fluminense	Flamengo	Palmeiras	Boca Juniors
+Palmeiras	Corinthians	Fluminense
+Corinthians	San Pablo
+Flamengo	San Pablo
+San Pablo	Flamengo	Fluminense	Brasil
+Inglaterra	Liverpool	Manchester City	Manchester United
+Liverpool	Manchester United
+Manchester City	Inglaterra	Manchester United
+Manchester United	Manchester City	Chelsea
+Tottenham	Liverpool	Chelsea	Arsenal
+Chelsea	Tottenham	Arsenal
+Arsenal	Chelsea	Tottenham
+España	Barcelona	Real Madrid	Atletico Madrid
+Barcelona	Real Madrid
+Atletico Madrid	Real Madrid
+Real Madrid	Atletico Madrid	Barcelona	España	Liverpool
+Italia	Inter	Roma
+Inter	Juventus	Milan	Fiorentina
+Milan	Inter
+Juventus	Napoli
+Napoli	Inter
+Roma	Lazio
+Lazio	Roma	Juventus
+Fiorentina	Italia
