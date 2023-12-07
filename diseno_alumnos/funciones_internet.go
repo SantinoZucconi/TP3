@@ -379,13 +379,16 @@ func vertices_entrada[K comparable](g TDAGrafo.Grafo[K]) TDADicc.Diccionario[K, 
 func ClusteringIndividual[K comparable](g TDAGrafo.GrafoNoPesado[K], vertice K) float64 {
 	adyacentes := g.Adyacente(vertice)
 	cantAdyacentes := len(adyacentes)
+	if cantAdyacentes < 2 {
+		return 0
+	}
 	unionAdyacentes := 0
 
 	for j := 0; j < cantAdyacentes; j++ {
 		w1 := adyacentes[j]
 		for k := 0; k < cantAdyacentes; k++ {
 			w2 := adyacentes[k]
-			if g.HayArista(w1, w2) {
+			if w1 != w2 && g.HayArista(w1, w2) {
 				unionAdyacentes++
 			}
 		}

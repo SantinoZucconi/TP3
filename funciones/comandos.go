@@ -11,16 +11,16 @@ const VACIO int = 0
 
 const (
 	LISTAR       string = "listar_operaciones"
-	CAMINO       string = "camino"
-	PAGERANK     string = "mas_importantes"
-	CONECTADOS   string = "conectados"
-	CICLO_N      string = "ciclo"
-	LECTURA      string = "lectura"
-	DIAMETRO     string = "diametro"
-	RANGO        string = "rango"
-	COMUNIDADES  string = "comunidad"
-	NAVEGACION_1 string = "navegacion"
-	CLUSTERING   string = "clustering"
+	CAMINO       string = "camino"          ////
+	PAGERANK     string = "mas_importantes" //
+	CONECTADOS   string = "conectados"      //
+	CICLO_N      string = "ciclo"           //
+	LECTURA      string = "lectura"         ///
+	DIAMETRO     string = "diametro"        ///
+	RANGO        string = "rango"           ////
+	COMUNIDADES  string = "comunidad"       //
+	NAVEGACION_1 string = "navegacion"      ////
+	CLUSTERING   string = "clustering"      ///
 )
 
 const NULO float64 = -1
@@ -33,14 +33,14 @@ func separarPaginas(paginas []string) []string {
 	return strings.Split(strings.Join(paginas, " "), ",")
 }
 
-func ListarOperaciones(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func ListarOperaciones(internet INTERNET.Internet, entrada []string) ([]string, error) { // BIEN (je)
 	if len(entrada) != 1 {
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
 	return internet.Operaciones(), nil
 }
 
-func EncontrarCaminoMinimo(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func EncontrarCaminoMinimo(internet INTERNET.Internet, entrada []string) ([]string, error) { // Parece estar bien
 	if len(entrada) < 2 {
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
@@ -54,14 +54,14 @@ func EncontrarCaminoMinimo(internet INTERNET.Internet, entrada []string) ([]stri
 	return camino, err
 }
 
-func CalcularDiametro(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func CalcularDiametro(internet INTERNET.Internet, entrada []string) ([]string, error) { // Probar (cuesta una banda)
 	if len(entrada) != 1 {
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
 	return internet.Diametro(), nil
 }
 
-func PaginasEnRango(internet INTERNET.Internet, entrada []string) (float64, error) {
+func PaginasEnRango(internet INTERNET.Internet, entrada []string) (float64, error) { // Parece estar bien
 	if len(entrada) < 2 {
 		return NULO, &ERROR.ErrorComandoInvalido{}
 	}
@@ -74,16 +74,17 @@ func PaginasEnRango(internet INTERNET.Internet, entrada []string) (float64, erro
 	return float64(internet.EnRango(origen, rango)), nil
 }
 
-func NavegarPrimerLink(internet INTERNET.Internet, entrada []string) ([]string, error) {
-	if len(entrada) != 2 {
+func NavegarPrimerLink(internet INTERNET.Internet, entrada []string) ([]string, error) { // Parece estar bien
+	if len(entrada) < 2 {
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
-	origen := entrada[1]
+
+	origen := recuperarPagina(entrada[1:])
 	camino := internet.NavPrimerLink(origen)
 	return camino, nil
 }
 
-func CalcularClustering(internet INTERNET.Internet, entrada []string) (float64, error) {
+func CalcularClustering(internet INTERNET.Internet, entrada []string) (float64, error) { // De los del ejemplo, no me da Peron
 	if len(entrada) > 1 {
 		pagina := recuperarPagina(entrada[1:])
 		return internet.ClusteringIndividual(pagina), nil
@@ -91,12 +92,12 @@ func CalcularClustering(internet INTERNET.Internet, entrada []string) (float64, 
 	return internet.ClusteringRed(), nil
 }
 
-func ListaConectados(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func ListaConectados(internet INTERNET.Internet, entrada []string) ([]string, error) { // Probar (cuesta una banda)
 	pagina := recuperarPagina(entrada[1:])
 	return internet.Conectividad(pagina), nil
 }
 
-func PaginasMasImportantes(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func PaginasMasImportantes(internet INTERNET.Internet, entrada []string) ([]string, error) { // Probar (cuesta una banda)
 	if len(entrada) != 2 {
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
@@ -109,12 +110,12 @@ func PaginasMasImportantes(internet INTERNET.Internet, entrada []string) ([]stri
 
 }
 
-func Lectura2am(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func Lectura2am(internet INTERNET.Internet, entrada []string) ([]string, error) { // Pifia algunas veces y tira una pagina sola cuando no deberia existir orden
 	paginas := separarPaginas(entrada[1:])
 	return internet.Lectura2am(paginas)
 }
 
-func Comunidades(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func Comunidades(internet INTERNET.Internet, entrada []string) ([]string, error) { // Probar (cuesta una banda)
 	if len(entrada) != 1 {
 		return []string{}, ERROR.ErrorComandoInvalido{}
 	}
@@ -123,16 +124,15 @@ func Comunidades(internet INTERNET.Internet, entrada []string) ([]string, error)
 	return internet.Comunidades(pagina), nil
 }
 
-func CicloNesimo(internet INTERNET.Internet, entrada []string) ([]string, error) {
-	if len(entrada) != 2 {
-		return []string{}, ERROR.ErrorComandoInvalido{}
-	}
+func CicloNesimo(internet INTERNET.Internet, entrada []string) ([]string, error) { // Probar (cuesta una banda)
+	paginas := separarPaginas(entrada[1:])
+	pagina := paginas[0]
 	cantidad, err := strconv.Atoi(entrada[1])
 	if err != nil || cantidad < 1 {
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
 
-	return internet.CicloN(entrada[0], cantidad)
+	return internet.CicloN(pagina, cantidad)
 }
 
 func ProcesarComando(internet INTERNET.Internet, entrada []string) ([]string, float64, error) {

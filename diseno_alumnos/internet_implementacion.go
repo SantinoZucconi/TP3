@@ -92,9 +92,10 @@ func (i *internet) ClusteringRed() float64 {
 	return i.clusteringRed
 }
 
-func (i *internet) ClusteringIndividual(pagina string) float64 {
+func (i *internet) ClusteringIndividual(pagina string) float64 { // Cerca, pero no da valores exactos
 	if !i.grafo.EsVertice(pagina) {
-		return 0
+		var f float64 = 0.000
+		return f
 	}
 	return ClusteringIndividual(i.grafo, pagina)
 }
