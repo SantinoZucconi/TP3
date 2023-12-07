@@ -23,8 +23,14 @@ func ImprimirPaginas(camino []string, separador string, imprimirCosto bool) {
 
 }
 
-func ImprimirValor(cant float64) {
-	fmt.Printf("\n%f", cant)
+func ImprimirValor(cant float64, entero bool) {
+	if entero {
+		ent := int(cant)
+		fmt.Printf("\n%d", ent)
+		return
+	}
+
+	fmt.Printf("\n%s", fmt.Sprintf("%.3f", cant))
 }
 
 func ImprimirResultado(comando string, lista []string, valor float64) {
@@ -44,12 +50,12 @@ func ImprimirResultado(comando string, lista []string, valor float64) {
 	case DIAMETRO:
 		ImprimirPaginas(lista, " ->", true)
 	case RANGO:
-		ImprimirValor(valor)
+		ImprimirValor(valor, true)
 	case COMUNIDADES:
 		ImprimirPaginas(lista, ",", false)
 	case NAVEGACION_1:
 		ImprimirPaginas(lista, " ->", false)
 	case CLUSTERING:
-		ImprimirValor(valor)
+		ImprimirValor(valor, false)
 	}
 }

@@ -20,14 +20,14 @@ type Internet interface {
 
 /*
 Camino más corto (★) LISTO                               // devuelve []K, error
-Artículos más importantes (★★★) LISTO?					// devuelve []K
-Conectividad (★★) LISTO?								// devuelve [][]K, Dic
-Ciclo de n artículos (★★★)								// devuelve []K
-Lectura a las 2 a.m. (★★)								// devuelve []K
+Artículos más importantes (★★★) LISTO					// devuelve []K
+Conectividad (★★) LISTO								// devuelve [][]K, Dic
+Ciclo de n artículos (★★★) 								// devuelve []K
+Lectura a las 2 a.m. (★★) LISTO								// devuelve []K
 Diametro (★) LISTO										// devuelve []K
 Todos en Rango (★) LISTO								// devuelve int
 Comunidades (★★)										// ?
-Navegacion por primer link (★) LISTO?					// devuelve []K
-Coeficiente de Clustering (★★)	LISTO					// devuelve float
+Navegacion por primer link (★) LISTO					// devuelve []K
+Coeficiente de Clustering (★★)	NO ME DA PERON					// devuelve float
 
 */

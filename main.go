@@ -43,6 +43,6 @@ func main() {
 		} else {
 			FUNCIONES.ImprimirResultado(entrada[0], lista, valor)
 		}
-		fmt.Print("\n")
+		fmt.Print("\n\n")
 	}
 }

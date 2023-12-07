@@ -126,16 +126,15 @@ func GradoDeSalida[K comparable](g TDAGrafo.GrafoNoPesado[K]) TDADicc.Diccionari
 }
 
 func ReconstruirCamino[K comparable](padres TDADicc.Diccionario[K, K], in, fin K) ([]K, error) {
-	var none K
 	p := TDAPila.CrearPilaDinamica[K]()
 	v := fin
 	res := []K{}
 	for v != in {
 		p.Apilar(v)
-		v = padres.Obtener(v)
-		if v == none {
+		if !padres.Pertenece(v) {
 			return []K{}, &ERROR.ErrorNoExisteRecorrido{}
 		}
+		v = padres.Obtener(v)
 	}
 	p.Apilar(in)
 	for !p.EstaVacia() {
@@ -299,6 +298,7 @@ func CFC[K comparable](g TDAGrafo.GrafoNoPesado[K]) ([][]K, TDADicc.Diccionario[
 			lista = append(lista, clave)
 			return true
 		})
+		listas = append(listas, lista)
 	}
 
 	return listas, pertenencia
@@ -380,11 +380,15 @@ func ClusteringIndividual[K comparable](g TDAGrafo.GrafoNoPesado[K], vertice K) 
 	cantAdyacentes := len(adyacentes)
 	unionAdyacentes := 0
 
+	if cantAdyacentes < 2 {
+		return 0
+	}
+
 	for j := 0; j < cantAdyacentes; j++ {
 		w1 := adyacentes[j]
 		for k := 0; k < cantAdyacentes; k++ {
 			w2 := adyacentes[k]
-			if g.HayArista(w1, w2) {
+			if w1 != vertice && w1 != w2 && g.HayArista(w1, w2) {
 				unionAdyacentes++
 			}
 		}
@@ -400,7 +404,8 @@ func ClusteringRed[K comparable](g TDAGrafo.GrafoNoPesado[K]) float64 {
 
 	for i := 0; i < cantidadVertices; i++ {
 		v := vertices[i]
-		total += ClusteringIndividual(g, v)
+		clust := ClusteringIndividual(g, v)
+		total += clust
 	}
 
 	return total / float64(cantidadVertices)
@@ -416,7 +421,7 @@ func PageRank[K comparable](g TDAGrafo.GrafoNoPesado[K]) []K {
 	pageOrdenadas := make([]K, 0)
 
 	heap := TDAHeap.CrearHeap[verticePR[K]](func(v1, v2 verticePR[K]) int {
-		comp := v2.pageRank*float64(cantidadVertices) - v1.pageRank*float64(cantidadVertices)
+		comp := v1.pageRank - v2.pageRank
 		if comp < 0 {
 			return -1
 		} else if comp > 0 {
@@ -427,7 +432,7 @@ func PageRank[K comparable](g TDAGrafo.GrafoNoPesado[K]) []K {
 
 	for i := 0; i < cantidadVertices; i++ {
 		v := vertices[i]
-		pageRanks.Guardar(v, float64(1/cantidadVertices))
+		pageRanks.Guardar(v, 1)
 	}
 
 	seguirIterando := true
@@ -454,7 +459,9 @@ func PageRank[K comparable](g TDAGrafo.GrafoNoPesado[K]) []K {
 		return true
 	})
 
-	pageOrdenadas = append(pageOrdenadas, heap.Desencolar().vertice)
+	for !heap.EstaVacia() {
+		pageOrdenadas = append(pageOrdenadas, heap.Desencolar().vertice)
+	}
 
 	return pageOrdenadas
 }
@@ -465,7 +472,7 @@ func _arrastrePR[K comparable](g TDAGrafo.GrafoNoPesado[K], vertice K, vertices 
 
 	for j := 0; j < N; j++ {
 		w := vertices[j]
-		if g.HayArista(w, vertice) {
+		if g.HayArista(w, vertice) && w != vertice {
 			cantAdyacentes := len(g.Adyacente(w))
 			segundoTermino += pageRanks.Obtener(w) / float64(cantAdyacentes)
 		}

@@ -29,7 +29,7 @@ func recuperarPagina(pagina []string) string {
 	return strings.Join(pagina, " ")
 }
 
-func separarPaginas(paginas []string) []string {
+func separarPorComas(paginas []string) []string {
 	return strings.Split(strings.Join(paginas, " "), ",")
 }
 
@@ -44,7 +44,7 @@ func EncontrarCaminoMinimo(internet INTERNET.Internet, entrada []string) ([]stri
 	if len(entrada) < 2 {
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
-	extremos := separarPaginas(entrada[1:])
+	extremos := separarPorComas(entrada[1:])
 	if len(extremos) != 2 {
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
@@ -65,7 +65,10 @@ func PaginasEnRango(internet INTERNET.Internet, entrada []string) (float64, erro
 	if len(entrada) < 2 {
 		return NULO, &ERROR.ErrorComandoInvalido{}
 	}
-	calculo := separarPaginas(entrada[1:])
+	calculo := separarPorComas(entrada[1:])
+	if len(calculo) > 2 {
+		return NULO, &ERROR.ErrorComandoInvalido{}
+	}
 	origen := calculo[0]
 	rango, err := strconv.Atoi(calculo[1])
 	if err != nil || rango < 0 {
@@ -75,10 +78,11 @@ func PaginasEnRango(internet INTERNET.Internet, entrada []string) (float64, erro
 }
 
 func NavegarPrimerLink(internet INTERNET.Internet, entrada []string) ([]string, error) {
-	if len(entrada) != 2 {
+	if len(entrada) < 2 {
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
-	origen := entrada[1]
+
+	origen := recuperarPagina(entrada[1:])
 	camino := internet.NavPrimerLink(origen)
 	return camino, nil
 }
@@ -110,20 +114,17 @@ func PaginasMasImportantes(internet INTERNET.Internet, entrada []string) ([]stri
 }
 
 func Lectura2am(internet INTERNET.Internet, entrada []string) ([]string, error) {
-	paginas := separarPaginas(entrada[1:])
+	paginas := separarPorComas(entrada[1:])
 	return internet.Lectura2am(paginas)
 }
 
 func Comunidades(internet INTERNET.Internet, entrada []string) ([]string, error) {
 	pagina := recuperarPagina(entrada[1:])
-	if len(pagina) != 1 {
-		return []string{}, ERROR.ErrorComandoInvalido{}
-	}
 	return internet.Comunidades(pagina), nil
 }
 
 func CicloNesimo(internet INTERNET.Internet, entrada []string) ([]string, error) {
-	ciclo := separarPaginas(entrada[1:])
+	ciclo := separarPorComas(entrada[1:])
 	if len(ciclo) != 2 {
 		return []string{}, ERROR.ErrorComandoInvalido{}
 	}
