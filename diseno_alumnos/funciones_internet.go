@@ -1,7 +1,6 @@
 package internet
 
 import (
-	"fmt"
 	TDACola "tdas/cola"
 	TDAHeap "tdas/cola_prioridad"
 	TDADicc "tdas/diccionario"
@@ -312,7 +311,7 @@ func _Comunidades[K comparable](g TDAGrafo.Grafo[K]) comunidades[K] {
 	for i, v := range g.ObtenerVertices() {
 		label.Guardar(v, i)
 	}
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 4; i++ {
 		for _, v := range g.ObtenerVertices() {
 			labelNeighbor := []int{}
 			for _, w := range g.Adyacente(v) {
@@ -545,7 +544,7 @@ func existeCiclo[K comparable](g TDAGrafo.Grafo[K]) bool {
 	return false
 }
 
-func _CicloN[K comparable](g TDAGrafo.Grafo[K], p K, n int) []K {
+func _CicloN[K comparable](g TDAGrafo.Grafo[K], p K, n int) ([]K, error) {
 	distancia := TDADicc.CrearHash[K, int]()
 	visitados := TDADicc.CrearHash[K, bool]()
 	distancia.Guardar(p, 0)
@@ -573,11 +572,10 @@ func _CicloN[K comparable](g TDAGrafo.Grafo[K], p K, n int) []K {
 			}
 		}
 	}
-
 	return dfs_cicloN[K](subgrafo, p, p, n)
 }
 
-func dfs_cicloN[K comparable](g TDAGrafo.Grafo[K], origen, destino K, dist int) []K {
+func dfs_cicloN[K comparable](g TDAGrafo.Grafo[K], origen, destino K, dist int) ([]K, error) {
 	var none K
 	for _, w := range g.Adyacente(origen) {
 		padres := TDADicc.CrearHash[K, K]()
@@ -587,11 +585,10 @@ func dfs_cicloN[K comparable](g TDAGrafo.Grafo[K], origen, destino K, dist int) 
 		var camino []K
 		_dfs_cicloN_aux[K](g, 1, dist, w, destino, padres, &camino, &hayCamino)
 		if hayCamino {
-			return camino
+			return camino, nil
 		}
 	}
-	fmt.Print("error")
-	return []K{}
+	return []K{}, ERROR.ErrorNoExisteOrden{}
 }
 
 func _dfs_cicloN_aux[K comparable](g TDAGrafo.Grafo[K], contador, n int, v, destino K, padres TDADicc.Diccionario[K, K], camino *[]K, hayCamino *bool) {

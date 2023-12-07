@@ -115,24 +115,24 @@ func Lectura2am(internet INTERNET.Internet, entrada []string) ([]string, error) 
 }
 
 func Comunidades(internet INTERNET.Internet, entrada []string) ([]string, error) {
-	if len(entrada) != 1 {
+	pagina := recuperarPagina(entrada[1:])
+	if len(pagina) != 1 {
 		return []string{}, ERROR.ErrorComandoInvalido{}
 	}
-
-	pagina := recuperarPagina(entrada[1:])
 	return internet.Comunidades(pagina), nil
 }
 
 func CicloNesimo(internet INTERNET.Internet, entrada []string) ([]string, error) {
-	if len(entrada) != 2 {
+	ciclo := separarPaginas(entrada[1:])
+	if len(ciclo) != 2 {
 		return []string{}, ERROR.ErrorComandoInvalido{}
 	}
-	cantidad, err := strconv.Atoi(entrada[1])
+	cantidad, err := strconv.Atoi(ciclo[1])
 	if err != nil || cantidad < 1 {
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
 
-	return internet.CicloN(entrada[0], cantidad)
+	return internet.CicloN(ciclo[0], cantidad)
 }
 
 func ProcesarComando(internet INTERNET.Internet, entrada []string) ([]string, float64, error) {

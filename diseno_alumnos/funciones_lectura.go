@@ -50,9 +50,12 @@ func LeerChile() TDADicc.Diccionario[string, bool] {
 		panic("No se pudo abrir el archivo")
 	}
 	defer datos.Close()
-	scaner := bufio.NewScanner(datos)
-	for scaner.Scan() {
-		texto := scaner.Text()
+	scaner := bufio.NewReaderSize(datos, 65536)
+	for {
+		texto, err := scaner.ReadString('\n')
+		if err != nil {
+			break
+		}
 		vertices := strings.Split(texto, ", ")
 		for _, v := range vertices {
 			dicc.Guardar(v, true)
@@ -61,11 +64,10 @@ func LeerChile() TDADicc.Diccionario[string, bool] {
 	return dicc
 }
 
-func ComprobarChile[K comparable](arr []string) []string {
-	comChile := LeerChile()
+func ComprobarChile[K comparable](arr []string, c TDADicc.Diccionario[string, bool]) []string {
 	faltantes := []string{}
 	for _, v := range arr {
-		if !comChile.Pertenece(v) {
+		if !c.Pertenece(v) {
 			faltantes = append(faltantes, v)
 		}
 	}

@@ -133,6 +133,5 @@ func (i *internet) CicloN(pagina string, n int) ([]string, error) {
 	if !i.grafo.EsVertice(pagina) {
 		return []string{}, &ERROR.ErrorNoExisteRecorrido{}
 	}
-
-	return _CicloN[string](i.grafo, pagina, n), nil
+	return _CicloN[string](i.grafo, pagina, n)
 }
