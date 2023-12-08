@@ -120,7 +120,7 @@ func Lectura2am(internet INTERNET.Internet, entrada []string) ([]string, error) 
 
 func Comunidades(internet INTERNET.Internet, entrada []string) ([]string, error) {
 	pagina := recuperarPagina(entrada[1:])
-	return internet.Comunidades(pagina), nil
+	return internet.ComunidadPagina(pagina), nil
 }
 
 func CicloNesimo(internet INTERNET.Internet, entrada []string) ([]string, error) {
@@ -133,7 +133,7 @@ func CicloNesimo(internet INTERNET.Internet, entrada []string) ([]string, error)
 		return []string{}, &ERROR.ErrorComandoInvalido{}
 	}
 
-	return internet.CicloN(ciclo[0], cantidad)
+	return internet.CicloPaginas(ciclo[0], cantidad)
 }
 
 func ProcesarComando(internet INTERNET.Internet, entrada []string) ([]string, float64, error) {

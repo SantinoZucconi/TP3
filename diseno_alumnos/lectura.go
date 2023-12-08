@@ -23,7 +23,9 @@ func LeerGrafotxt(archivo string) (TDAGrafo.GrafoNoPesado[string], TDADicc.Dicci
 	for scaner.Scan() {
 		texto := scaner.Text()
 		vertices := strings.Split(texto, "\t")
-		g.AgregarVertice(vertices[0])
+		if !g.EsVertice(vertices[0]) {
+			g.AgregarVertice(vertices[0])
+		}
 		if len(vertices) > 1 {
 			primerosLinks.Guardar(vertices[0], vertices[1])
 		}
