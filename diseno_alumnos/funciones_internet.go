@@ -502,7 +502,7 @@ func _Lectura2am(grafo TDAGrafo.GrafoNoPesado[string], paginas []string) ([]stri
 }
 
 func OrdenTopologico[K comparable](g TDAGrafo.GrafoNoPesado[K]) ([]K, error) {
-	if !g.Dirigido() || existeCiclo[K](g) {
+	if !g.Dirigido() {
 		return []K{}, ERROR.ErrorNoExisteOrden{}
 	}
 	res := []K{}
@@ -526,29 +526,10 @@ func OrdenTopologico[K comparable](g TDAGrafo.GrafoNoPesado[K]) ([]K, error) {
 			}
 		}
 	}
-	return res, nil
-}
-
-func existeCiclo[K comparable](g TDAGrafo.Grafo[K]) bool {
-	var none K
-	padres := TDADicc.CrearHash[K, K]()
-	q := TDACola.CrearColaEnlazada[K]()
-	vertice_random := g.VerticeAleatorio()
-	padres.Guardar(vertice_random, none)
-	q.Encolar(vertice_random)
-	for !q.EstaVacia() {
-		v := q.Desencolar()
-		for _, w := range g.Adyacente(v) {
-			if padres.Pertenece(w) {
-				if padres.Obtener(w) != v {
-					return true
-				}
-			}
-			padres.Guardar(w, v)
-			q.Encolar(w)
-		}
+	if len(res) != len(g.ObtenerVertices()) {
+		return []K{}, ERROR.ErrorNoExisteOrden{}
 	}
-	return false
+	return res, nil
 }
 
 func _CicloN[K comparable](g TDAGrafo.Grafo[K], p K, n int) ([]K, error) {
@@ -586,11 +567,12 @@ func dfs_cicloN[K comparable](g TDAGrafo.Grafo[K], origen, destino K, dist int) 
 	var none K
 	for _, w := range g.Adyacente(origen) {
 		padres := TDADicc.CrearHash[K, K]()
+		visitados := TDADicc.CrearHash[K, bool]()
 		padres.Guardar(origen, none)
 		padres.Guardar(w, origen)
 		var hayCamino bool
 		var camino []K
-		_dfs_cicloN_aux[K](g, 1, dist, w, destino, padres, &camino, &hayCamino)
+		_dfs_cicloN_aux[K](g, 1, dist, w, destino, padres, &camino, &hayCamino, visitados)
 		if hayCamino {
 			return camino, nil
 		}
@@ -598,17 +580,21 @@ func dfs_cicloN[K comparable](g TDAGrafo.Grafo[K], origen, destino K, dist int) 
 	return []K{}, ERROR.ErrorNoExisteOrden{}
 }
 
-func _dfs_cicloN_aux[K comparable](g TDAGrafo.Grafo[K], contador, n int, v, destino K, padres TDADicc.Diccionario[K, K], camino *[]K, hayCamino *bool) {
+func _dfs_cicloN_aux[K comparable](g TDAGrafo.Grafo[K], contador, n int, v, destino K, padres TDADicc.Diccionario[K, K], camino *[]K, hayCamino *bool, visitados TDADicc.Diccionario[K, bool]) {
+	visitados.Guardar(v, true)
 	if contador == n && v == destino {
 		cam, _ := ReconstruirCamino[K](padres, destino, padres.Obtener(v))
 		cam = append(cam, v)
 		*hayCamino = true
 		*camino = cam
-	} else if contador < n {
+	} else {
 		lista := g.Adyacente(v)
 		for _, w := range lista {
-			padres.Guardar(w, v)
-			_dfs_cicloN_aux[K](g, contador+1, n, w, destino, padres, camino, hayCamino)
+			if !visitados.Pertenece(w) {
+				padres.Guardar(w, v)
+				_dfs_cicloN_aux[K](g, contador+1, n, w, destino, padres, camino, hayCamino, visitados)
+			}
 		}
 	}
+	visitados.Borrar(v)
 }
