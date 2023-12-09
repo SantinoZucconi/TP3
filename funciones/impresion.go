@@ -2,38 +2,44 @@ package funciones
 
 import (
 	"fmt"
+	TDALista "tdas/lista"
 )
 
-func ImprimirLista(lista []string) {
-	for i := 0; i < len(lista); i++ {
-		fmt.Printf("\n%s", lista[i])
-	}
+func ImprimirLista(lista TDALista.Lista[string]) {
+	lista.Iterar(func(s string) bool {
+		fmt.Printf("%s\n", s)
+		return true
+	})
 }
 
-func ImprimirPaginas(camino []string, separador string, imprimirCosto bool) {
-	largo := len(camino)
-	fmt.Printf("\n%s", camino[0])
-	for i := 1; i < largo; i++ {
-		fmt.Printf(separador+" %s", camino[i])
-	}
-
+func ImprimirPaginas(camino TDALista.Lista[string], separador string, imprimirCosto bool) {
+	var contador int
+	camino.Iterar(func(s string) bool {
+		if contador == 0 {
+			fmt.Printf("%s", s)
+			contador++
+		} else {
+			fmt.Printf(separador+" %s", s)
+		}
+		return true
+	})
 	if imprimirCosto {
-		fmt.Printf("\nCosto: %d", largo-1)
+		fmt.Printf("\nCosto: %d", camino.Largo()-1)
 	}
-
+	fmt.Print("\n")
 }
 
 func ImprimirValor(cant float64, entero bool) {
 	if entero {
 		ent := int(cant)
-		fmt.Printf("\n%d", ent)
+		fmt.Printf("%d\n", ent)
 		return
 	}
 
-	fmt.Printf("\n%s", fmt.Sprintf("%.3f", cant))
+	fmt.Printf("%s\n", fmt.Sprintf("%.3f", cant))
 }
 
-func ImprimirResultado(comando string, lista []string, valor float64) {
+func ImprimirResultado(comando string, lista TDALista.Lista[string], valor float64) {
 	switch comando {
 	case LISTAR:
 		ImprimirLista(lista)

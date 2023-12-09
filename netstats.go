@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	INTERNET "tp3/diseno_alumnos"
+	TDALista "tdas/lista"
+	INTERNET "tp3/diseno"
 	ERROR "tp3/errores"
 	FUNCIONES "tp3/funciones"
 )
@@ -16,7 +17,7 @@ func main() {
 	links := argumentos[1:]
 	var (
 		err   error
-		lista []string
+		lista TDALista.Lista[string]
 		valor float64
 	)
 
@@ -27,8 +28,6 @@ func main() {
 	}
 
 	internet := INTERNET.GenerarInternet(links[0])
-
-	fmt.Print("\n")
 
 	s := bufio.NewScanner(os.Stdin)
 	for s.Scan() {

@@ -3,7 +3,8 @@ package funciones
 import (
 	"strconv"
 	"strings"
-	INTERNET "tp3/diseno_alumnos"
+	TDALista "tdas/lista"
+	INTERNET "tp3/diseno"
 	ERROR "tp3/errores"
 )
 
@@ -33,30 +34,27 @@ func separarPorComas(paginas []string) []string {
 	return strings.Split(strings.Join(paginas, " "), ",")
 }
 
-func ListarOperaciones(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func ListarOperaciones(internet INTERNET.Internet, entrada []string) (TDALista.Lista[string], error) {
 	if len(entrada) != 1 {
-		return []string{}, &ERROR.ErrorComandoInvalido{}
+		return TDALista.CrearListaEnlazada[string](), &ERROR.ErrorComandoInvalido{}
 	}
 	return internet.Operaciones(), nil
 }
 
-func EncontrarCaminoMinimo(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func EncontrarCaminoMinimo(internet INTERNET.Internet, entrada []string) (TDALista.Lista[string], error) {
 	if len(entrada) < 2 {
-		return []string{}, &ERROR.ErrorComandoInvalido{}
+		return TDALista.CrearListaEnlazada[string](), &ERROR.ErrorComandoInvalido{}
 	}
 	extremos := separarPorComas(entrada[1:])
 	if len(extremos) != 2 {
-		return []string{}, &ERROR.ErrorComandoInvalido{}
+		return TDALista.CrearListaEnlazada[string](), &ERROR.ErrorComandoInvalido{}
 	}
-	origen := extremos[0]
-	destino := extremos[1]
-	camino, err := internet.CaminoMasCorto(origen, destino)
-	return camino, err
+	return internet.CaminoMasCorto(extremos[0], extremos[1])
 }
 
-func CalcularDiametro(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func CalcularDiametro(internet INTERNET.Internet, entrada []string) (TDALista.Lista[string], error) {
 	if len(entrada) != 1 {
-		return []string{}, &ERROR.ErrorComandoInvalido{}
+		return TDALista.CrearListaEnlazada[string](), &ERROR.ErrorComandoInvalido{}
 	}
 	return internet.Diametro(), nil
 }
@@ -77,9 +75,9 @@ func PaginasEnRango(internet INTERNET.Internet, entrada []string) (float64, erro
 	return float64(internet.EnRango(origen, rango)), nil
 }
 
-func NavegarPrimerLink(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func NavegarPrimerLink(internet INTERNET.Internet, entrada []string) (TDALista.Lista[string], error) {
 	if len(entrada) < 2 {
-		return []string{}, &ERROR.ErrorComandoInvalido{}
+		return TDALista.CrearListaEnlazada[string](), &ERROR.ErrorComandoInvalido{}
 	}
 
 	origen := recuperarPagina(entrada[1:])
@@ -95,51 +93,51 @@ func CalcularClustering(internet INTERNET.Internet, entrada []string) (float64, 
 	return internet.ClusteringRed(), nil
 }
 
-func ListaConectados(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func ListaConectados(internet INTERNET.Internet, entrada []string) (TDALista.Lista[string], error) {
 	pagina := recuperarPagina(entrada[1:])
 	return internet.Conectividad(pagina), nil
 }
 
-func PaginasMasImportantes(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func PaginasMasImportantes(internet INTERNET.Internet, entrada []string) (TDALista.Lista[string], error) {
 	if len(entrada) != 2 {
-		return []string{}, &ERROR.ErrorComandoInvalido{}
+		return TDALista.CrearListaEnlazada[string](), &ERROR.ErrorComandoInvalido{}
 	}
 	top, err := strconv.Atoi(entrada[1])
 	if err != nil || top < 1 {
-		return []string{}, &ERROR.ErrorComandoInvalido{}
+		return TDALista.CrearListaEnlazada[string](), &ERROR.ErrorComandoInvalido{}
 	}
 
 	return internet.MasImportantes(top), nil
 
 }
 
-func Lectura2am(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func Lectura2am(internet INTERNET.Internet, entrada []string) (TDALista.Lista[string], error) {
 	paginas := separarPorComas(entrada[1:])
 	return internet.Lectura2am(paginas)
 }
 
-func Comunidades(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func Comunidades(internet INTERNET.Internet, entrada []string) (TDALista.Lista[string], error) {
 	pagina := recuperarPagina(entrada[1:])
 	return internet.ComunidadPagina(pagina), nil
 }
 
-func CicloNesimo(internet INTERNET.Internet, entrada []string) ([]string, error) {
+func CicloNesimo(internet INTERNET.Internet, entrada []string) (TDALista.Lista[string], error) {
 	ciclo := separarPorComas(entrada[1:])
 	if len(ciclo) != 2 {
-		return []string{}, ERROR.ErrorComandoInvalido{}
+		return TDALista.CrearListaEnlazada[string](), ERROR.ErrorComandoInvalido{}
 	}
 	cantidad, err := strconv.Atoi(ciclo[1])
 	if err != nil || cantidad < 1 {
-		return []string{}, &ERROR.ErrorComandoInvalido{}
+		return TDALista.CrearListaEnlazada[string](), &ERROR.ErrorComandoInvalido{}
 	}
 
 	return internet.CicloPaginas(ciclo[0], cantidad)
 }
 
-func ProcesarComando(internet INTERNET.Internet, entrada []string) ([]string, float64, error) {
+func ProcesarComando(internet INTERNET.Internet, entrada []string) (TDALista.Lista[string], float64, error) {
 	var err error
 	var valor float64
-	var lista []string
+	var lista TDALista.Lista[string]
 
 	if len(entrada) == VACIO {
 		err = &ERROR.ErrorNoHayEntrada{}
