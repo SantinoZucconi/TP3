@@ -48,7 +48,7 @@ func ImprimirResultado(comando string, lista TDALista.Lista[string], valor float
 	case PAGERANK:
 		ImprimirPaginas(lista, ",", false)
 	case CONECTADOS:
-		ImprimirLista(lista)
+		ImprimirPaginas(lista, ",", false)
 	case CICLO_N:
 		ImprimirPaginas(lista, " ->", false)
 	case LECTURA:

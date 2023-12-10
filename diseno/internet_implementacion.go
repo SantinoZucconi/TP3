@@ -14,7 +14,7 @@ type internet struct {
 	primerosLinks          TDADicc.Diccionario[string, string]
 	pageRank               TDALista.Lista[string]
 	pageRankCalculado      bool
-	cfcs                   TDALista.Lista[TDALista.Lista[string]]
+	cfcs                   []TDALista.Lista[string]
 	pertenencia            TDADicc.Diccionario[string, int]
 	cfcsCalculadas         bool
 	clusteringRed          float64
@@ -83,18 +83,7 @@ func (i *internet) Conectividad(pagina string) TDALista.Lista[string] {
 		i.cfcs, i.pertenencia = FSI.CFC(i.grafo)
 		i.cfcsCalculadas = true
 	}
-	var cfc TDALista.Lista[string]
-	cfc_indicada := i.pertenencia.Obtener(pagina)
-	var contador int
-	i.cfcs.Iterar(func(l TDALista.Lista[string]) bool {
-		if contador == cfc_indicada {
-			cfc = l
-			return false
-		}
-		contador++
-		return true
-	})
-	return cfc
+	return i.cfcs[i.pertenencia.Obtener(pagina)]
 }
 
 func (i *internet) ClusteringRed() float64 {
